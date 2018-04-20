@@ -18,10 +18,11 @@ const warmupDB = async dbName => {
 // Configure routes
 const router = express.Router();
 router.post(
+  // DB injection no escape on received POST arguments
   '/login',
   wrap(async (req, res) => {
     const params = req.body;
-    console.log(params);
+    console.log(`POST - /login - ${JSON.stringify({ username: params.username, password: params.password })}`);
     const userdata = await db.get(
       `SELECT * FROM Users WHERE username='${params.username}' AND password='${params.password}'`
     );
@@ -29,9 +30,11 @@ router.post(
   })
 );
 router.get(
+  // DB injection no escape on urls params
   '/profile/:uid',
   wrap(async (req, res) => {
     const uid = req.params.uid;
+    console.log(`GET  - /profile/${uid}`);
     const userdata = await db.get(`SELECT * FROM Users WHERE id=${uid}`);
     res.json({ query: { uid }, profile: userdata });
   })

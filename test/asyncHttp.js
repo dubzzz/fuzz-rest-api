@@ -1,25 +1,26 @@
 const http = require('http');
 
-const asyncHttp = function(options, payload) {
+const asyncHttp = (options, payload) => {
   return new Promise((resolve, reject) => {
-    const req = http.request(options, function(res) {
-      var chunks = [];
-      res.on('data', function(chunk) {
-        chunks.push(chunk);
+    const req = http.request(options, res => {
+      let chunks = [];
+      res.on('data', chunk => chunks.push(chunk));
+      res.on('end', () => {
+        resolve({
+          data: Buffer.concat(chunks).toString('utf8'),
+          status: res.statusCode
+        });
       });
-      res.on('end', function() {
-        resolve(Buffer.concat(chunks));
-      });
-      req.on('error', function(err) {
-        reject(err);
-      });
+      req.on('error', reject);
     });
     if (payload) req.write(JSON.stringify(payload));
     req.end();
   });
 };
 
-const builOptionsForUri = uri => ({
+const builOptionsForUri = (server, uri) => ({
+  host: server.host,
+  port: server.port,
   path: uri,
   headers: {
     'content-type': 'application/json',
@@ -27,6 +28,13 @@ const builOptionsForUri = uri => ({
   }
 });
 
-export const httpGet = async (uri, payload) => asyncHttp(Object.assign(builOptionsForUri(uri), { method: 'GET' }));
-export const httpPost = async (uri, payload) =>
-  asyncHttp(Object.assign(builOptionsForUri(uri), { method: 'POST' }), payload);
+export const httpGet = async (server, uri) =>
+  asyncHttp(Object.assign(builOptionsForUri(server, uri), { method: 'GET' }));
+export const httpPost = async (server, uri, payload) =>
+  asyncHttp(Object.assign(builOptionsForUri(server, uri), { method: 'POST' }), payload);
+
+export const throwIfHttpFailed = async requestPromise => {
+  const out = await requestPromise;
+  if (out.status === 500) throw new Error(`Internal Server Error, got: ${JSON.stringify(out)}`);
+  return out;
+};
