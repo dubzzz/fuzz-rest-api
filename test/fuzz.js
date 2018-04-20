@@ -10,19 +10,24 @@ describe('Fuzzing REST API', () => {
   it('/api/login', async () =>
     await fc.assert(
       fc.asyncProperty(
-        fc.record({
-          username: fc.string(),
-          password: fc.string()
-        }),
+        fc.record(
+          {
+            username: fc.string(),
+            password: fc.string()
+          },
+          { with_deleted_keys: true }
+        ),
         async payload => {
           await throwIfHttpFailed(httpPost(server, '/api/login', payload));
         }
-      )
+      ),
+      { timeout: 100 }
     ));
   it('/api/profile/:uid', async () =>
     await fc.assert(
       fc.asyncProperty(fc.fullUnicodeString(), async uid => {
         await throwIfHttpFailed(httpGet(server, `/api/profile/${encodeURIComponent(uid)}`));
-      })
+      }),
+      { timeout: 100 }
     ));
 });
