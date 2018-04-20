@@ -14,3 +14,8 @@ npm install
 npm run start #launch a webserver on port 8080
 npm run test  #run the 'fuzzing'
 ```
+
+It intentially comes with an unsafe implementation of its APIs.
+
+- /api/login - does not escape incoming parameters from POST
+- /api/profile/:uid - considers uid to be an integer while its not

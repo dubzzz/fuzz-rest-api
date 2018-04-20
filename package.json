@@ -1,0 +1,25 @@
+{
+  "name": "poc-fuzz-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format:check": "prettier --list-different \"**/*.js\"",
+    "format:fix": "prettier --write \"**/*.js\"",
+    "start": "node src/server.js",
+    "test": "mocha \"/test/**/*.js\""
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "dependencies": {
+    "async-middleware": "^1.2.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "sqlite": "^2.9.1"
+  },
+  "devDependencies": {
+    "fast-check": "0.0.13",
+    "mocha": "^5.1.1",
+    "prettier": "^1.12.1"
+  }
+}
