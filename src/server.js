@@ -39,6 +39,30 @@ router.get(
     res.json({ query: { uid }, profile: userdata });
   })
 );
+router.post(
+  // Much deaper payload
+  '/comment',
+  wrap(async (req, res) => {
+    // payload:
+    // {
+    //   user: { login: 'toto' },
+    //   comment: { message: 'lorem ipsum', postId: 5, commentId: 8, public: false, details: ["", 5] }
+    // }
+    const params = req.body;
+    console.log(`POST - /comment - ${JSON.stringify({ ...params })}`);
+    if (
+      params.user == null ||
+      params.user.login == null ||
+      params.comment == null ||
+      typeof params.comment.postId !== 'number'
+    ) {
+      res.json({ answer: 'bad request' });
+      return;
+    }
+    if (typeof params.comment.commentId === 'string') throw new Error('Supposed it failed on this case');
+    res.json({});
+  })
+);
 
 // Lauching the server
 app.use(bodyParser.urlencoded({ extended: true }));
