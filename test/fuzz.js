@@ -16,7 +16,7 @@ describe('Fuzzing REST API', () => {
             username: fc.string(),
             password: fc.string()
           },
-          { with_deleted_keys: true }
+          { withDeletedKeys: true }
         ),
         async payload => {
           await throwIfHttpFailed(httpPost(server, '/api/login', payload));

@@ -20,7 +20,7 @@ export const inferPayloadArbitrary = (payload, orString, withDeletedKeys) => {
       for (const k of Object.keys(payload)) {
         recordConfiguration[k] = inferPayloadArbitrary(payload[k], orString, withDeletedKeys);
       }
-      return fc.record(recordConfiguration, { with_deleted_keys: withDeletedKeys });
+      return fc.record(recordConfiguration, { withDeletedKeys });
   }
   return fc.constant(undefined);
 };
