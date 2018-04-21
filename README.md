@@ -41,6 +41,8 @@ fc.record({
 
 In the above example `nameOfFieldOne`, `nameOfFieldTwo`... are all filled with string values. Depending on your API you may want to be more precise on the types you are using. The benefit of specifying the real types is that you may find bugs deaper in the code.
 
-Noentheless the two approches are fully complementary.
+Nonetheless the two approches are fully complementary.
 
 One solution to have the better of those two worlds is to use `fc.oneof(/*realType*/, fc.string())` everywhere you want to specify real type.
+
+You may also use the helper https://github.com/dubzzz/fuzz-rest-api/blob/master/test/inferPayloadArbitrary.js in order to automatically build the arbitrary from a given payload. With this helper, input `{min: 9, max: 30, label: 'toto'}` will produce the arbitrary `fc.record({min: fc.integer(), max: fc.integer(), label: fc.string()})`.
