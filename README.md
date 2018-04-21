@@ -46,3 +46,73 @@ Nonetheless the two approches are fully complementary.
 One solution to have the better of those two worlds is to use `fc.oneof(/*realType*/, fc.string())` everywhere you want to specify real type.
 
 You may also use the helper https://github.com/dubzzz/fuzz-rest-api/blob/master/test/inferPayloadArbitrary.js in order to automatically build the arbitrary from a given payload. With this helper, input `{min: 9, max: 30, label: 'toto'}` will produce the arbitrary `fc.record({min: fc.integer(), max: fc.integer(), label: fc.string()})`.
+
+## Output of test command
+
+`npm run test` produces the following output:
+
+```
+$ npm run test
+
+> poc-fuzz-rest-api@1.0.0 test ...
+> mocha --require babel-polyfill --require babel-register "test/**/*.js"
+
+
+
+  Fuzzing REST API
+    1) /api/login
+    2) /api/profile/:uid
+    3) /api/comment
+
+
+  0 passing (452ms)
+  3 failing
+
+  1) Fuzzing REST API
+       /api/login:
+     Error: Property failed after 5 tests (seed: 1524328189654, path: 4:0:0:1:0:4): [{"password":"'"}]
+Shrunk 5 time(s)
+Got error: Error: Internal Server Error, got: {"data":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Error: SQLITE_ERROR: unrecognized token: &quot;&#39;&#39;&#39;&quot;</pre>\n</body>\n</html>\n","status":500}
+
+Stack trace: Error: Internal Server Error, got: {"data":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Error: SQLITE_ERROR: unrecognized token: &quot;&#39;&#39;&#39;&quot;</pre>\n</body>\n</html>\n","status":500}
+    at exports.throwIfHttpFailed (test/asyncHttp.js:38:33)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+      at throwIfFailed (node_modules\fast-check\src\check\runner\utils\utils.ts:146:11)
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:188:7)
+
+  2) Fuzzing REST API
+       /api/profile/:uid:
+     Error: Property failed after 1 tests (seed: 1524328189825, path: 0:1:0:0:0): ["\u0000"]
+Shrunk 4 time(s)
+Got error: Error: Internal Server Error, got: {"data":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Error: SQLITE_ERROR: near &quot;=&quot;: syntax error</pre>\n</body>\n</html>\n","status":500}
+
+Stack trace: Error: Internal Server Error, got: {"data":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Error: SQLITE_ERROR: near &quot;=&quot;: syntax error</pre>\n</body>\n</html>\n","status":500}
+    at exports.throwIfHttpFailed (test/asyncHttp.js:38:33)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+      at throwIfFailed (node_modules\fast-check\src\check\runner\utils\utils.ts:146:11)
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:188:7)
+
+  3) Fuzzing REST API
+       /api/comment:
+     Error: Property failed after 17 tests (seed: 1524328189856, path: 16:0:2:3:4:4:4:4): [{"user":{"login":""},"comment":{"postId":0,"commentId":""}}]
+Shrunk 7 time(s)
+Got error: Error: Internal Server Error, got: {"data":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Error: Supposed it failed on this case<br> &nbsp; &nbsp;at router.post.wrap (src/server.js:62:61)<br> &nbsp; &nbsp;at node_modules/async-middleware/dist/index.js:18:23<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (node_modules/express/lib/router/layer.js:95:5)<br> &nbsp; &nbsp;at next (node_modules/express/lib/router/route.js:137:13)<br> &nbsp; &nbsp;at Route.dispatch (node_modules/express/lib/router/route.js:112:3)<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (node_modules/express/lib/router/layer.js:95:5)<br> &nbsp; &nbsp;at node_modules/express/lib/router/index.js:281:22<br> &nbsp; &nbsp;at Function.process_params (node_modules/express/lib/router/index.js:335:12)<br> &nbsp; &nbsp;at next (node_modules/express/lib/router/index.js:275:10)<br> &nbsp; &nbsp;at Function.handle (node_modules/express/lib/router/index.js:174:3)</pre>\n</body>\n</html>\n","status":500}
+
+Stack trace: Error: Internal Server Error, got: {"data":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Error: Supposed it failed on this case<br> &nbsp; &nbsp;at router.post.wrap (src/server.js:62:61)<br> &nbsp; &nbsp;at node_modules/async-middleware/dist/index.js:18:23<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (node_modules/express/lib/router/layer.js:95:5)<br> &nbsp; &nbsp;at next (node_modules/express/lib/router/route.js:137:13)<br> &nbsp; &nbsp;at Route.dispatch (node_modules/express/lib/router/route.js:112:3)<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (node_modules/express/lib/router/layer.js:95:5)<br> &nbsp; &nbsp;at node_modules/express/lib/router/index.js:281:22<br> &nbsp; &nbsp;at Function.process_params (node_modules/express/lib/router/index.js:335:12)<br> &nbsp; &nbsp;at next (node_modules/express/lib/router/index.js:275:10)<br> &nbsp; &nbsp;at Function.handle (node_modules/express/lib/router/index.js:174:3)</pre>\n</body>\n</html>\n","status":500}
+    at exports.throwIfHttpFailed (test/asyncHttp.js:38:33)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+      at throwIfFailed (node_modules\fast-check\src\check\runner\utils\utils.ts:146:11)
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:188:7)
+```
+
+It detects:
+- sql injection in /api/login with counterexample: `{"password":"'"}`
+- sql injection in /api/profile/:uid with :uid: `\u0000`
+- implementation problem in /api/comment with counterexample: `{"user":{"login":""},"comment":{"postId":0,"commentId":""}}`
+
