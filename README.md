@@ -25,7 +25,7 @@ It intentially comes with an unsafe implementation of its APIs.
 This Proof-Of-Concept uses the power of property based testing to generate inputs for a REST end-point.
 It sends the generated values to this end-point and check for the property - _whatever the data I send I should not receive an Internal Error aka 500_.
 
-Basically defining the REST inputs using fast check is quite simple:
+Basically defining the REST inputs using [fast-check](https://github.com/dubzzz/fast-check/) is quite simple:
 ```js
 fc.record({
   nameOfFieldOne: fc.string(),
@@ -39,13 +39,13 @@ fc.record({
 })
 ```
 
-In the above example `nameOfFieldOne`, `nameOfFieldTwo`... are all filled with string values. Depending on your API you may want to be more precise on the types you are using. The benefit of specifying the real types is that you may find bugs deaper in the code.
+In the above example `nameOfFieldOne`, `nameOfFieldTwo`... are all filled with string values. Depending on your API you may want to be more precise on the types you are using. For instance if `nameOfFieldOne` expects integers you might prefer `fc.integer()`. The benefit of specifying the real types is that you may find bugs deaper in your code.
 
-Nonetheless the two approches are fully complementary.
+Nonetheless the two approches are fully complementary. Depending on the type safety provided by your back, you may want to check that sending other types will not cause Internal Server Errors like here in `/api/profile/:uid` route.
 
-One solution to have the better of those two worlds is to use `fc.oneof(/*realType*/, fc.string())` everywhere you want to specify real type.
+One solution to have the better of those two worlds is to use `fc.oneof(/*realType, eg.: fc.integer()*/, fc.string())` everywhere you want to specify real type.
 
-You may also use the helper https://github.com/dubzzz/fuzz-rest-api/blob/master/test/inferPayloadArbitrary.js in order to automatically build the arbitrary from a given payload. With this helper, input `{min: 9, max: 30, label: 'toto'}` will produce the arbitrary `fc.record({min: fc.integer(), max: fc.integer(), label: fc.string()})`.
+You may also use the helper https://github.com/dubzzz/fuzz-rest-api/blob/master/test/inferPayloadArbitrary.js in order to automatically build the arbitrary from a given payload. With this helper, input `{min: 9, max: 30, label: 'toto'}` will produce the arbitrary `fc.record({min: fc.integer(), max: fc.integer(), label: fc.string()})` or the alternative with `fc.oneof(...)`.
 
 ## Output of test command
 
